@@ -1,0 +1,63 @@
+module nso-filetemplate {
+
+  namespace "http://example.com/nso-filetemplate";
+  prefix nso-filetemplate;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-common {
+    prefix tailf;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+
+  description
+    "Model of a text based template and its variables.  Includes actions to generate a
+     file or string";
+
+  revision 2021-08-27 {
+    description
+      "Initial revision.";
+  }
+
+  list template {
+    description "Datamodel to store template information";
+
+    key name;
+    leaf name {
+      tailf:info "Name of the templates";
+      tailf:cli-allow-range;
+      type string;
+    }
+
+    leaf source {
+      type string;
+    }
+
+    leaf-list variable {
+      type string;
+    }
+    tailf:action generate-template {
+      tailf:actionpoint generate-template;
+      input {
+        list variable {
+          leaf name {
+            type leafref {
+              path "../../../variable";
+            }
+          }
+          leaf value {
+            type string;
+          }
+        }
+      }
+      output {
+        leaf result {
+          type string;
+        }
+      }
+    }
+  }
+}
