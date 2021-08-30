@@ -21,6 +21,19 @@ module nso-file-utils {
       "Initial revision.";
   }
 
+  grouping generate-template-inputs {
+    list variable {
+      leaf name {
+        type leafref {
+          path "../../../variable";
+        }
+      }
+      leaf value {
+        type string;
+      }
+    }
+  }
+
   list template {
     description "Datamodel to store template information";
 
@@ -41,15 +54,24 @@ module nso-file-utils {
     tailf:action generate-template {
       tailf:actionpoint generate-template;
       input {
-        list variable {
-          leaf name {
-            type leafref {
-              path "../../../variable";
-            }
-          }
-          leaf value {
-            type string;
-          }
+        uses generate-template-inputs;
+      }
+      output {
+        leaf result {
+          type string;
+        }
+      }
+    }
+    tailf:action generate-template-to-file {
+      tailf:actionpoint generate-template-to-file;
+      input {
+        uses generate-template-inputs;
+        leaf output-filename {
+          type string;
+        }
+        leaf overwrite {
+          type boolean;
+          default false;
         }
       }
       output {
